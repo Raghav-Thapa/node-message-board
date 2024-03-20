@@ -44,11 +44,11 @@ class ChatService {
   async getChats(userId) {
     let chats = await ChatModel.find({ users: { $elemMatch: { $eq: userId } } })
       .populate("users", "-password -updatedAt -createdAt -__v")
-      .populate("latestMessage")
+      .populate("lastMsg")
       .sort({ updatedAt: -1 });
 
     chats = await UserModel.populate(chats, {
-      path: "latestMessage.sender",
+      path: "lastMsg.sender",
       select: "fullName username email avatar",
     });
 
