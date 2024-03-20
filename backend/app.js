@@ -7,7 +7,6 @@ const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
-const upload = multer();
 const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -20,7 +19,8 @@ app.use(
     extended: true,
   })
 );
-app.use(upload.array());
+
+app.use("/assets/", express.static(process.cwd() + "/public/"));
 
 app.use("/api", router);
 

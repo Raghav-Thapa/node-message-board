@@ -171,9 +171,6 @@ const HomePage = () => {
             <div className="font-sans font-semibold text-2xl mt-2 ms-4 ">
               <h1>User name</h1>
             </div>
-            <div>
-              <i class="fa-solid fa-xmark"></i>
-            </div>
           </div>
         </div>
       </div>

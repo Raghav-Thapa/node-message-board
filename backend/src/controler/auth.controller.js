@@ -8,6 +8,10 @@ class AuthController {
   register = async (req, res, next) => {
     try {
       let registerData = req.body;
+          if (req.file) {
+            registerData.image = req.file.filename;
+          }
+
       //   console.log(registerData)
       userServ.validatedata(registerData);
       registerData.password = bcrypt.hashSync(registerData.password, 10);
