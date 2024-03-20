@@ -1,17 +1,13 @@
 const express = require("express");
 const app = express.Router();
-// const authCheck = require("../middleware/auth.middleware");
+const authCheck = require("../middleware/auth.middleware.js")
+const chatCtrl = require("../controler/chat.controller.js")
 
-// const uploadPath =(req,res,next) => {
-//     req.uploadPath ="./public/user"
-//     next()
-
-// }
-// app.post("/", function (req, res, next) {
-//   res.json({ msg: "chat post!" });
+app.post("/", authCheck, chatCtrl.accessChat);
+app.get("/", authCheck, chatCtrl.fetchChats);
+// app.get("/", function (req, res, next) {
+//   res.json({ msg: " chat get!" });
 // });
-app.get("/", function (req, res, next) {
-  res.json({ msg: " chat get!" });
-});
+
 
 module.exports = app;

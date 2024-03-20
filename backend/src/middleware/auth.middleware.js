@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const jwt = require("jsonwebtoken");
-const userServ = require('../service/user.service')
+const userServ = require("../service/user.service");
 
 const authCheck = async (req, res, next) => {
   try {
@@ -25,7 +25,7 @@ const authCheck = async (req, res, next) => {
       if (!token) {
         next({ status: 401, msg: "Token not set" });
       }
-      
+
       let data = jwt.verify(token, process.env.JWT_SECRET);
       // data
       let user = await userServ.getUserById(data.userId);
@@ -34,6 +34,7 @@ const authCheck = async (req, res, next) => {
       }
       req.authUser = user;
       req.user = user;
+      req.userId = user._id;
       next();
     }
   } catch (exception) {
