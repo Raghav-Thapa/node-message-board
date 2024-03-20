@@ -45,6 +45,33 @@ class UserService {
       throw exception;
     }
   };
+
+  getUserById = async (id) => {
+    try {
+      let userDetail = await UserModel.findById(id);
+      return userDetail;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  getAllCount = async (filter = {}) => {
+    return await UserModel.countDocuments(filter);
+  };
+
+  getAllUsers = async ({ perPage = 10, currentPage = 1 }) => {
+    try {
+      let skip = (currentPage - 1) * perPage;
+      let data = await UserModel.find()
+        .sort({ _id: -1 })
+        .skip(skip)
+        .limit(perPage);
+      return data;
+    } catch (exception) {
+      console.log(exception);
+      throw { status: 500, msg: "Querry execution fialed." };
+    }
+  };
 }
 
 const userServ = new UserService();

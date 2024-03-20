@@ -5,20 +5,29 @@ const ChatSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  participants: [
+  users: [
     {
       type: mongoose.Types.ObjectId,
       required: true,
       ref: "User",
     },
   ],
-  messages: [
-    {
-      type: mongoose.Types.ObjectId,
-      required: true,
-      ref: "Message",
-    },
-  ],
+  lastMsg: {
+    type: mongoose.Types.ObjectId,
+    ref: "Message",
+    default: null,
+  },
+  groupAdmin: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+  },
+  // messages: [
+  //   {
+  //     type: mongoose.Types.ObjectId,
+  //     required: true,
+  //     ref: "Message",
+  //   },
+  // ],
   timestamps: true,
 });
 

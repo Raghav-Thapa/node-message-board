@@ -5,7 +5,7 @@ const MessageSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  author: {
+  sender: {
     type: mongoose.Types.ObjectId,
     ref: "User",
     required: true,
@@ -16,7 +16,10 @@ const MessageSchema = new mongoose.Schema({
   },
   imgUrl: {
     type: String,
-    trim: true,
+  },
+  chat: {
+    type: mongoose.Types.ObjectId,
+    ref: "Chat",
   },
   timestamps: true,
 });

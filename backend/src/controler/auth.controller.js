@@ -1,5 +1,8 @@
 const bcrypt = require("bcryptjs");
 const userServ = require("../service/user.service");
+const dotenv = require("dotenv");
+dotenv.config();
+const jwt = require("jsonwebtoken");
 
 class AuthController {
   register = async (req, res, next) => {
@@ -34,10 +37,30 @@ class AuthController {
       if (!userDetail) {
         next({ status: 400, msg: "User not found" });
       } else if (bcrypt.compareSync(payload.password, userDetail.password)) {
+        let accessToken = jwt.sign(
+          {
+            userId: userDetail._id,
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: "3h" }
+        );
+
+        let refreshToken = jwt.sign(
+          {
+            userId: userDetail._id,
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: "5d" }
+        );
         res.json({
           //  result:payload
           result: {
             data: userDetail,
+            token: {
+              accessToken: accessToken,
+              accessType: "Bearer",
+              refreshToken: refreshToken,
+            },
           },
           status: true,
           msg: "you are logged in",
@@ -47,6 +70,39 @@ class AuthController {
       }
     } catch (exception) {
       next({ status: 400, msg: "Query exception. View console" });
+    }
+  };
+
+  getLoggedInUser = (req, res, next) => {
+    try {
+      res.json({
+        result: req.authUser,
+        msg: "Your detail",
+        status: true,
+      });
+    } catch (exception) {
+      console.log(exception);
+      next(exception);
+    }
+  };
+
+  getAllUser = async (req, res, next) => {
+    try {
+      let paging = {
+        totalNoOfRows: await userServ.getAllCount(),
+        perPage: req.query.perPage ? Number(req.query.perPage) : 10,
+        currentPage: req.query.page ? Number(req.query.page) : 1,
+      };
+      let data = await userServ.getAllUsers(paging);
+      res.json({
+        result: data,
+        status: true,
+        msg: "Users Data Fetched",
+        meta: paging,
+      });
+    } catch (exception) {
+      console.log(exception);
+      next(exception);
     }
   };
 }
