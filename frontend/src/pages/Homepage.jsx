@@ -3,7 +3,7 @@ import userImage from "../assets/captain.jpg";
 const HomePage = () => {
   return (
     <>
-      <div className=" w-full flex bg-black">
+      <div className=" w-full flex bg-black max-h-screen ">
         <div className=" bg-black w-28 h-screen">
           <div>
             <div className="mt-7 text-center cursor-pointer  ">
@@ -171,6 +171,31 @@ const HomePage = () => {
             <div className="font-sans font-semibold text-2xl mt-2 ms-4 ">
               <h1>User name</h1>
             </div>
+          </div>
+
+          <div className="h-4/5 overflow-scroll overflow-x-hidden  relative mb-2">
+            Messages
+            <br />
+            dwadawdawdw
+            <div>
+              <img src={userImage} alt="" />
+            </div>
+            <div>
+              <img src={userImage} alt="" />
+            </div>
+            <div>
+              <img src={userImage} alt="" />
+            </div>
+          </div>
+          <div className="">
+            <input
+              className="h-9 w-11/12 ps-7 bg-slate-300 text-black"
+              type="text"
+              placeholder="Your message"
+            />
+            <button>
+              <i className="fa-solid fa-paper-plane ms-2 text-2xl"></i>
+            </button>
           </div>
         </div>
       </div>
