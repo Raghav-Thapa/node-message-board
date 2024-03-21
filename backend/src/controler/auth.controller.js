@@ -8,9 +8,9 @@ class AuthController {
   register = async (req, res, next) => {
     try {
       let registerData = req.body;
-          if (req.file) {
-            registerData.image = req.file.filename;
-          }
+      if (req.file) {
+        registerData.image = req.file.filename;
+      }
 
       //   console.log(registerData)
       userServ.validatedata(registerData);
@@ -107,6 +107,21 @@ class AuthController {
     } catch (exception) {
       console.log(exception);
       next(exception);
+    }
+  };
+
+  getUserById = async (req, res, next) => {
+    try {
+      let user = await userServ.getUserById(req.params.id);
+
+      res.json({
+        result: user,
+        msg: "User fetched successfully",
+        status: true,
+        meta: null,
+      });
+    } catch (except) {
+      next(except);
     }
   };
 }
