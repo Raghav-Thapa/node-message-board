@@ -1,28 +1,7 @@
 import axiosInstance from "../config/axios.config";
 import HttpService from "./http.service";
 
-class AuthService extends HttpService {
-  login = async (credentials) => {
-    try {
-      let response = await axiosInstance.post("/auth/login", credentials);
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  register = async (data) => {
-    try {
-      let response = await axiosInstance.post("/auth/register", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      return response;
-    } catch (exception) {
-      throw exception;
-    }
-  };
+class ChatService extends HttpService {
 
   getLoggedInUser = async () => {
     try {
@@ -59,4 +38,4 @@ class AuthService extends HttpService {
   };
 }
 
-export default AuthService;
+export default ChatService;

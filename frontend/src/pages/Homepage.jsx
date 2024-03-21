@@ -140,20 +140,25 @@ const HomePage = () => {
               <i className="fa-solid fa-xmark text-end text-2xl "></i>{" "}
             </div>
           </div>
+
           <div className="h-4/5 overflow-scroll overflow-x-hidden  relative mb-2">
             Messages
             <br />
             dwadawdawdw
             <div>
-              <img src={userImage} alt="" />
+              <h1 className="mb-6">Hello</h1>
             </div>
             <div>
-              <img src={userImage} alt="" />
+              <h1 className="mb-6">Hello</h1>
             </div>
             <div>
-              <img src={userImage} alt="" />
+              <h1 className="mb-6">Hello</h1>
+            </div>
+            <div>
+              <h1 className="mb-6">Hello</h1>
             </div>
           </div>
+
           <div className="">
             <input
               className="h-9 w-11/12 ps-7 bg-slate-300 text-black"
