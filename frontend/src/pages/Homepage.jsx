@@ -159,7 +159,7 @@ const HomePage = () => {
           </ul>
         </div>
         <div className=" bg-gray-200 w-full mt-1 mb-1 me-2 rounded-e-2xl">
-          <div className="flex p-3 ps-7 bg-gray-300">
+          <div className="flex p-3 ps-7 bg-slate-200 w-full">
             <div>
               <img
                 src={userImage}
@@ -168,11 +168,19 @@ const HomePage = () => {
                 className="w-12 h-14 rounded-full"
               />
             </div>
-            <div className="font-sans font-semibold text-2xl mt-2 ms-4 ">
-              <h1>User name</h1>
+            <div>
+              <h1 className="font-sans font-semibold text-2xl mt-2 ms-4 ">
+                User name
+              </h1>
+              <h1 className="ms-4 flex items-center text-sm">
+                <i class="fa-solid fa-circle text-green-800  me-2 fa-xs "></i>
+                Active now
+              </h1>
+            </div>
+            <div className="text-right w-4/5 p-3  ">
+              <i class="fa-solid fa-xmark text-end text-2xl "></i>{" "}
             </div>
           </div>
-
           <div className="h-4/5 overflow-scroll overflow-x-hidden  relative mb-2">
             Messages
             <br />
