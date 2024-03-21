@@ -60,7 +60,6 @@ const LoginPage = () => {
         } else {
           toast.warning("Credentials does not match");
         }
-
         // console.log(response)
       } catch (axiosErrorResponse) {
         console.log(axiosErrorResponse);

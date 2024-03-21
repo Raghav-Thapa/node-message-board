@@ -1,6 +1,7 @@
 import axiosInstance from "../config/axios.config";
+import HttpService from "./http.service";
 
-class AuthService {
+class AuthService extends HttpService {
   login = async (credentials) => {
     try {
       let response = await axiosInstance.post("/auth/login", credentials);
@@ -40,7 +41,6 @@ class AuthService {
     }
   };
 
-
   getLoggedInUser = async () => {
     try {
       let token = localStorage.getItem("accessToken");
@@ -55,6 +55,18 @@ class AuthService {
       });
       return userInfo;
     } catch (exception) {}
+  };
+
+  listAllUsers = async () => {
+    try {
+      let response = await this.getRequest(
+        "/auth/all",
+        { auth: true }
+      );
+      return response;
+    } catch (exception) {
+      throw exception;
+    }
   };
 }
 

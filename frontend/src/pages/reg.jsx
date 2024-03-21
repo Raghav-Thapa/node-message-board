@@ -1,268 +1,140 @@
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import { NavLink, useNavigate } from "react-router-dom";
-import logo from "../assets/images/logo.png";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import AuthService from "../auth/auth.service";
-import { toast } from "react-toastify";
-import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
-import { Container, Form, Row, Col, InputGroup } from "react-bootstrap";
-import { HiOutlineMail, HiOutlineLockClosed } from "react-icons/hi";
-import { FaCircleUser } from "react-icons/fa6";
-import { FaRegUser } from "react-icons/fa";
-import { FaUserPlus } from "react-icons/fa6";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import category from "../admin/category";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import { Container, Breadcrumb, Card, Row, Col } from "react-bootstrap";
+import { FaPlus } from "react-icons/fa";
+import { NavLink, Link } from "react-router-dom";
+
+import DataTable from "react-data-table-component";
+
 import { useCallback, useEffect, useState } from "react";
+import customStyles from "../../assets/css/table";
+import { toast } from "react-toastify";
+import movie from "./";
+import { TableActionButtons } from "../../components/table-action.component";
 
-const Header = () => {
-  const [cats, setCats] = useState();
-
-  const loadCategories = useCallback(async () => {
-    let response = await category.categorySvc.listAllHomeCategories(20, 1);
-    setCats(response.result);
-  }, []);
-
-  useEffect(() => {
-    loadCategories();
-  }, []);
-
-  const authSvc = new AuthService();
-  const navigate = useNavigate();
-  const loginSchema = Yup.object({
-    email: Yup.string().email().required(),
-    password: Yup.string().required(),
-  });
-  const formik = useFormik({
-    initialValues: {
-      email: null,
-      password: null,
-    },
-    validationSchema: loginSchema,
-    onSubmit: async (values) => {
-      try {
-        let response = await authSvc.login(values);
-        if (response.status) {
-          let formattedData = {
-            id: response.result.data._id,
-            name: response.result.data.name,
-            email: response.result.data.email,
-            role: response.result.data.role,
-          };
-
-          localStorage.setItem(
-            "accessToken",
-            response.result.token.accessToken
-          );
-          localStorage.setItem(
-            "refreshToken",
-            response.result.token.refreshToken
-          );
-          localStorage.setItem("user", JSON.stringify(formattedData));
-
-          toast.success("Welcome to" + formattedData.role + " Portal !");
-          navigate("/");
-          window.location.reload();
-        } else {
-          toast.warning("Credentials does not match");
-        }
-
-        // console.log(response)
-      } catch (axiosErrorResponse) {
-        console.log(axiosErrorResponse);
-        toast.error("Credentials does not match");
+const MovieListPage = () => {
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true);
+      let response = await movie.movieSvc.deleteMovieById(id);
+      if (response.status) {
+        toast.success(response.msg);
+        await loadMovies();
       }
-    },
-  });
-  const [visible, setVisible] = useState(false);
-
-  const dashboard = () => {
-    let user = JSON.parse(localStorage.getItem("user"));
-    let role = user.role;
-    if (role === "admin") {
-      navigate("/" + role);
+    } catch (exception) {
+      toast.error("Error while deleting Movie");
     }
   };
+  const columns = [
+    {
+      name: "Name",
+      selector: (row) => row.name,
+      sortable: true,
+    },
+    {
+      name: "Category",
+      selector: (row) =>
+        row.categories
+          ? row.categories.map((item) => item.name).join(", ")
+          : "-",
+    },
+    {
+      name: "Status",
+      selector: (row) => row.status,
+      sortable: true,
+    },
+    {
+      name: "Action",
+      selector: (row) => (
+        <TableActionButtons
+          editurl={"/admin/movie/" + row._id}
+          id={row._id}
+          deleteAction={handleDelete}
+        />
+      ),
+    },
+  ];
 
-  const isLoggedIn = () => {
-    return localStorage.getItem("user") !== null;
+  let [movieList, setMovieList] = useState();
+  let [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    totalNoOfRows: 0,
+  });
+  let [loading, setLoading] = useState(true);
+
+  const loadMovies = useCallback(async (perPage = 10, page = 1) => {
+    try {
+      let response = await movie.movieSvc.listAllMovies(perPage, page);
+      if (response.status) {
+        setMovieList(response.result);
+        setPagination(response.meta);
+      }
+    } catch (exception) {
+      console.log("Baner Fetch Exception: ", exception);
+      toast.error("Error while fetching movie");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handlePageChange = (page) => {
+    loadMovies(pagination.perPage, page);
   };
 
-  const Logout = () => {
-    localStorage.clear();
-    navigate("/");
-    toast.success("Logged Out Successfully");
+  const handlePerRowsChange = (perPage, page) => {
+    loadMovies(perPage, page);
   };
+
+  useEffect(() => {
+    loadMovies();
+  }, []);
 
   return (
     <>
-      <Navbar className="navv" bg="dark" data-bs-theme="dark">
-        <Container style={{ marginLeft: "150px" }}>
-          <Navbar.Brand to="/">
-            <img className="logo" src={logo} alt="" />
-          </Navbar.Brand>
-          <Nav className="me-auto">
-            <NavLink className="headertitle active" to="/">
-              Home
-            </NavLink>
-            <NavLink className="headertitle" to="/movies">
-              Movies
-            </NavLink>
-
-            <NavDropdown
-              style={{ color: "white" }}
-              className="headertitleGenre"
-              title="Genre"
+      <Container fluid className="px-4">
+        <Row>
+          <Col sm={6}>
+            <h1 className="mt-4">Movie List </h1>
+          </Col>
+          <Col sm={6} className="mt-5">
+            <NavLink
+              to="/admin/movie/create"
+              className={"btn btn-sm btn-success float-end"}
             >
-              {cats &&
-                cats.map((cat, index) => (
-                  <NavLink
-                    key={index}
-                    to={`/category/${cat.slug}`}
-                    className={"dropdown-item"}
-                  >
-                    {cat.name}
-                    <NavDropdown.Divider />
-                  </NavLink>
-                ))}
-            </NavDropdown>
-            {/* <NavLink className='headertitlesignin'>Sign In</NavLink> */}
+              <FaPlus /> Add Movie
+            </NavLink>
+          </Col>
+        </Row>
+        <Breadcrumb className="mb-4">
+          <li className="breadcrumb-item">
+            <Link role="button" className={"breadcrumb-item"} to="/admin">
+              Dashboard
+            </Link>
+          </li>
+          <Breadcrumb.Item active>Movie List </Breadcrumb.Item>
+        </Breadcrumb>
 
-            {isLoggedIn() ? (
-              JSON.parse(localStorage.getItem("user")).role === "admin" ? (
-                <Button
-                  className="btnstyle headertitle"
-                  onClick={dashboard}
-                  label="Dashboard"
-                />
-              ) : null
-            ) : (
-              <Button
-                className="btnstyle headertitle"
-                label="Sign In"
-                onClick={() => setVisible(true)}
-              />
-            )}
-            {isLoggedIn() && (
-              <Button
-                className="btnstyle headertitle"
-                onClick={Logout}
-                style={
-                  JSON.parse(localStorage.getItem("user")).role === "admin"
-                    ? { marginLeft: "-20px" }
-                    : {}
-                }
-                label={<i class="fa-solid fa-right-from-bracket"></i>}
-              />
-            )}
-            <Dialog
-              className="loginoverlay"
-              draggable={false}
-              visible={visible}
-              onHide={() => setVisible(false)}
-            >
-              <Container>
-                <Row className="backk">
-                  <Col lg={6}>
-                    <h3 className="login logintitle">
-                      {" "}
-                      <FaCircleUser className="mb-2 me-2" />
-                      USER LOGIN
-                    </h3>
-                    <hr className="mb-4" />
-
-                    <Form
-                      onSubmit={formik.handleSubmit}
-                      className="form-format"
-                    >
-                      <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <InputGroup className="mb-3">
-                          <InputGroup.Text id="basic-addon1">
-                            <HiOutlineMail />
-                          </InputGroup.Text>
-                          <Form.Control
-                            type="email"
-                            required
-                            placeholder="Enter your email"
-                            name="email"
-                            onChange={formik.handleChange}
-                          />
-                        </InputGroup>
-                        {/* <span className="text-danger">{formik.errors?.email}</span> */}
-                      </Form.Group>
-
-                      <Form.Group
-                        className="mb-3"
-                        controlId="formBasicPassword"
-                      >
-                        <InputGroup className="mb-3">
-                          <InputGroup.Text id="basic-addon1">
-                            <HiOutlineLockClosed />
-                          </InputGroup.Text>
-                          <Form.Control
-                            type="password"
-                            placeholder="Enter your password"
-                            name="password"
-                            onChange={formik.handleChange}
-                          />
-                        </InputGroup>
-                        {/* <span className="text-danger">{formik.errors?.password}</span> */}
-                      </Form.Group>
-
-                      <Form.Group
-                        className="mb-3"
-                        controlId="formBasicCheckbox"
-                      >
-                        <Form.Check type="checkbox" label="Remember Me" />
-                      </Form.Group>
-
-                      <Button
-                        variant="primary"
-                        type="submit"
-                        className="me-4 ms-2 loginbutton mt-3"
-                      >
-                        <FaRegUser className="me-3 " />
-                        Login
-                      </Button>
-
-                      {/* <NavLink className="signup" style={{ textDecoration: "none", color: "#09b0e7" }} to="forget-password">Forgot Password ? </NavLink> */}
-                    </Form>
-                  </Col>
-
-                  <Col lg={1}>
-                    <div className="vline"></div>
-                    <div>
-                      <b style={{ fontSize: "16px" }}>OR</b>
-                    </div>
-                    <div className="vline"></div>
-                  </Col>
-
-                  <Col lg={5} className="signupimage">
-                    <div className="formatsignup">
-                      <NavLink to="/register">
-                        <Button
-                          variant="primary"
-                          type="submit"
-                          className="me-4 ms-2 signupbutton"
-                        >
-                          <FaUserPlus className="me-3 " />
-                          Signup
-                        </Button>
-                      </NavLink>
-                    </div>
-                  </Col>
-                </Row>
-              </Container>
-            </Dialog>
-          </Nav>
-        </Container>
-      </Navbar>
+        <Card className="mb-4">
+          <Card.Header>
+            <h4>Movie List </h4>
+          </Card.Header>
+          <Card.Body>
+            <DataTable
+              columns={columns}
+              data={movieList}
+              pagination
+              progressPending={loading}
+              dense
+              customStyles={customStyles}
+              paginationServer
+              paginationTotalRows={pagination.totalNoOfRows}
+              onChangeRowsPerPage={handlePerRowsChange}
+              onChangePage={handlePageChange}
+            />
+          </Card.Body>
+        </Card>
+      </Container>
     </>
   );
 };
 
-export default Header;
+export default MovieListPage;

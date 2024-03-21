@@ -1,15 +1,37 @@
+import { useCallback, useState, useEffect } from "react";
 import userImage from "../assets/captain.jpg";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Auth } from "../services/";
 
 const HomePage = () => {
-  let user = JSON.parse(localStorage.getItem("user"));
-
+  let userInfo = JSON.parse(localStorage.getItem("user"));
+  let [userList, setUserList] = useState();
+  let [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const Logout = () => {
     localStorage.clear();
     navigate("/");
     toast.success("Logged Out Successfully");
   };
+
+  const loadUsers = useCallback(async () => {
+    try {
+      let response = await Auth.authSvc.listAllUsers();
+      if (response.status) {
+        setUserList(response.result);
+      }
+    } catch (exception) {
+      console.log("error fetching users", exception);
+      toast.error("Error while fetching users");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
 
   return (
     <>
@@ -24,7 +46,7 @@ const HomePage = () => {
                 <i className="fa-solid fa-message text-slate-300 text-xl"></i>
               </div>
               <div className="mt-7 text-center cursor-pointer  ">
-                <i class="fa-solid fa-user text-slate-300 text-xl"></i>
+                <i className="fa-solid fa-user text-slate-300 text-xl"></i>
               </div>
               <div className="mt-7 text-center cursor-pointer ">
                 <i
@@ -62,117 +84,38 @@ const HomePage = () => {
               /> */}
             </div>
           </div>
-          <ul>
-            <li className=" cursor-pointer">
-              {" "}
-              <div className="flex">
-                <div>
-                  <img
-                    src={userImage}
-                    alt="pic"
-                    width={50}
-                    className="w-12 h-14 rounded-lg ms-8 mt-5"
-                  />
-                </div>
-                <div className="mt-7 font-sans font-semibold ms-3">
-                  <div className="text-lg">User Name</div>
-                  <div className="text-sm font-thin">
-                    lastest message sent by user
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li className=" cursor-pointer">
-              <div className="flex">
-                <div>
-                  <img
-                    src={userImage}
-                    alt="pic"
-                    width={50}
-                    className="w-12 h-14 rounded-lg ms-8 mt-8"
-                  />
-                </div>
-                <div className="mt-7 font-sans font-semibold ms-3">
-                  <div className="text-lg">User Name</div>
-                  <div className="text-sm font-thin">
-                    lastest message sent by user
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li className=" cursor-pointer">
-              <div className="flex">
-                <div>
-                  <img
-                    src={userImage}
-                    alt="pic"
-                    width={50}
-                    className="w-12 h-14 rounded-lg ms-8 mt-8"
-                  />
-                </div>
-                <div className="mt-7 font-sans font-semibold ms-3">
-                  <div className="text-lg">User Name</div>
-                  <div className="text-sm font-thin">
-                    lastest message sent by user
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li className=" cursor-pointer">
-              <div className="flex">
-                <div>
-                  <img
-                    src={userImage}
-                    alt="pic"
-                    width={50}
-                    className="w-12 h-14 rounded-lg ms-8 mt-8"
-                  />
-                </div>
-                <div className="mt-7 font-sans font-semibold ms-3">
-                  <div className="text-lg">User Name</div>
-                  <div className="text-sm font-thin">
-                    lastest message sent by user
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li className=" cursor-pointer">
-              <div className="flex">
-                <div>
-                  <img
-                    src={userImage}
-                    alt="pic"
-                    width={50}
-                    className="w-12 h-14 rounded-lg ms-8 mt-8"
-                  />
-                </div>
-                <div className="mt-7 font-sans font-semibold ms-3">
-                  <div className="text-lg">User Name</div>
-                  <div className="text-sm font-thin">
-                    lastest message sent by user
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li className=" cursor-pointer">
-              <div className="flex">
-                <div>
-                  <img
-                    src={userImage}
-                    alt="pic"
-                    width={50}
-                    className="w-12 h-14 rounded-lg ms-8 mt-8"
-                  />
-                </div>
-                <div className="mt-7 font-sans font-semibold ms-3">
-                  <div className="text-lg">User Name</div>
-                  <div className="text-sm font-thin">
-                    lastest message sent by user
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
+          <div className=" overflow-scroll h-4/5 overflow-x-hidden">
+            <ul>
+              {userList &&
+                userList
+                  .filter((user) => user._id !== userInfo.id)
+                  .map((user, index) => (
+                    <li key={user._id} className="cursor-pointer">
+                      <div className="flex">
+                        <div>
+                          <img
+                            src={
+                              import.meta.env.VITE_IMAGE_URL +
+                              "/user/" +
+                              user.image
+                            }
+                            alt="User profile"
+                            width={50}
+                            className="w-12 h-14 rounded-lg ms-8 mt-8"
+                          />
+                        </div>
+                        <div className="mt-7 font-sans font-semibold ms-3">
+                          <div className="text-lg">{user.name}</div>
+                          <div className="text-sm font-thin">
+                            {/* replace with the actual property for the latest message */}
+                            latest message sent by user
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+            </ul>
+          </div>
         </div>
         <div className=" bg-gray-200 w-full mt-1 mb-1 me-2 rounded-e-2xl">
           <div className="flex p-3 ps-7 bg-slate-200 w-full">
@@ -189,12 +132,12 @@ const HomePage = () => {
                 User name
               </h1>
               <h1 className="ms-4 flex items-center text-sm">
-                <i class="fa-solid fa-circle text-green-800  me-2 fa-xs "></i>
+                <i className="fa-solid fa-circle text-green-800  me-2 fa-xs "></i>
                 Active now
               </h1>
             </div>
             <div className="text-right w-4/5 p-3  ">
-              <i class="fa-solid fa-xmark text-end text-2xl "></i>{" "}
+              <i className="fa-solid fa-xmark text-end text-2xl "></i>{" "}
             </div>
           </div>
           <div className="h-4/5 overflow-scroll overflow-x-hidden  relative mb-2">
