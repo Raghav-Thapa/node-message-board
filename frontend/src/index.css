@@ -5,3 +5,12 @@
 ::-webkit-scrollbar {
     width: 1px;
 }
+
+.fontt {
+    font-family: "Molle", cursive;
+    font-weight: 600;
+    font-style: italic;
+    color: rgb(86, 84, 84);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Molle&display=swap')
