@@ -5,10 +5,21 @@ import { toast } from "react-toastify";
 import { Auth } from "../services/";
 
 const HomePage = () => {
-  let userInfo = JSON.parse(localStorage.getItem("user"));
+  // let userInfo = JSON.parse(localStorage.getItem("user"));
+  const [userInfo, setUserInfo] = useState(null);
   let [userList, setUserList] = useState();
   let [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+    useEffect(() => {
+      const userInfoString = localStorage.getItem("user");
+      const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+      //  console.log("userInfo:", userInfo);
+      //  if (userInfo) {
+      //   //  console.log("userInfo._id:", userInfo.id);
+      //  }
+      setUserInfo(userInfo);
+    }, []);
   const Logout = () => {
     localStorage.clear();
     navigate("/");
@@ -32,6 +43,52 @@ const HomePage = () => {
   useEffect(() => {
     loadUsers();
   }, []);
+  const [messageInput, setMessageInput] = useState("");
+
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [chatHistory, setChatHistory] = useState([]);
+
+  const selectUser = async (user) => {
+    console.log("Selecting user", user);
+    setSelectedUser(user);
+    try {
+      console.log("Fetching chat history");
+       const response = await Auth.msgSvc.getMessages(user._id);
+      console.log("Chat history fetched", response);
+      if (response.data) {
+        setChatHistory(response.data);
+      } else {
+        setChatHistory([]);
+      }
+    } catch (error) {
+      console.error("Error fetching chat history", error);
+    }
+  };
+
+
+  
+  const sendMessage = async (message) => {
+if (!selectedUser || !selectedUser._id) {
+  console.error("No user selected or user ID is undefined");
+  return;
+}
+  if (!userInfo || !userInfo.id) {
+    console.error("No user info or user ID is undefined");
+    return;
+  }console.log("userInfo.id:", userInfo.id);
+  console.log("selectedUser._id:", selectedUser._id);
+    try {
+         const requestBody = {
+           text: message,
+            participants: [userInfo.id.toString(), selectedUser._id.toString()],
+         };
+
+      await Auth.msgSvc.sendMessage(requestBody);
+      setChatHistory([...chatHistory, message]);
+    } catch (error) {
+      console.error("Error sending message", error);
+    }
+  };
 
   return (
     <>
@@ -87,10 +144,15 @@ const HomePage = () => {
           <div className=" overflow-scroll h-4/5 overflow-x-hidden">
             <ul>
               {userList &&
+                userInfo &&
                 userList
                   .filter((user) => user._id !== userInfo.id)
                   .map((user, index) => (
-                    <li key={user._id} className="cursor-pointer">
+                    <li
+                      key={user._id}
+                      className="cursor-pointer"
+                      onClick={() => selectUser(user)}
+                    >
                       <div className="flex">
                         <div>
                           <img
@@ -140,8 +202,14 @@ const HomePage = () => {
               <i className="fa-solid fa-xmark text-end text-2xl "></i>{" "}
             </div>
           </div>
-
           <div className="h-4/5 overflow-scroll overflow-x-hidden  relative mb-2">
+            {chatHistory.map((message, index) => (
+              <div key={index}>
+                <h1 className="mb-6">{message}</h1>
+              </div>
+            ))}
+          </div>
+          {/* <div className="h-4/5 overflow-scroll overflow-x-hidden  relative mb-2">
             Messages
             <br />
             dwadawdawdw
@@ -157,15 +225,27 @@ const HomePage = () => {
             <div>
               <h1 className="mb-6">Hello</h1>
             </div>
-          </div>
+          </div> */}
 
           <div className="">
             <input
               className="h-9 w-11/12 ps-7 bg-slate-300 text-black"
               type="text"
               placeholder="Your message"
+              onChange={(event) => setMessageInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  sendMessage(event.target.value);
+                  setMessageInput("");
+                }
+              }}
             />
-            <button>
+            <button
+              onClick={() => {
+                sendMessage(messageInput);
+                setMessageInput("");
+              }}
+            >
               <i className="fa-solid fa-paper-plane ms-2 text-2xl"></i>
             </button>
           </div>

@@ -35,6 +35,7 @@ const authCheck = async (req, res, next) => {
       req.authUser = user;
       req.user = user;
       req.userId = user._id;
+      // console.log(req.user)
       next();
     }
   } catch (exception) {

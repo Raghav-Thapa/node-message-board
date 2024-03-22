@@ -124,6 +124,30 @@ class AuthController {
       next(except);
     }
   };
+
+
+  getUserBySlug = async (req, res, next) => {
+    try {
+      let user = await userServ.getUserByFilter(
+        {
+          slug: req.params.slug,
+        },
+        {
+          perPage: 1,
+          currentPage: 1,
+        }
+      );
+
+      res.json({
+        result: movie[0],
+        msg: "User fetched successfully",
+        status: true,
+        meta: null,
+      });
+    } catch (except) {
+      next(except);
+    }
+  };
 }
 
 const authCtrl = new AuthController();

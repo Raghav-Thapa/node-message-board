@@ -9,8 +9,9 @@ const msgCtrl = require("../controler/message.controller");
 
 // }
 
-app.post("/", authCheck, msgCtrl.sendMessage);
-app.get("/:chatId", authCheck, msgCtrl.allMessages);
+// app.post("/", authCheck, msgCtrl.sendMessage);
+app.post("/send/:id", authCheck, msgCtrl.sendMessage);
+app.get("/:id", authCheck, msgCtrl.getMessages);
 
 // app.get("/", function (req, res, next) {
 //   res.json({ msg: "get message!" });

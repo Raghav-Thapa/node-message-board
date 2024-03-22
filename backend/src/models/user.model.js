@@ -18,6 +18,17 @@ const UserSchema = new mongoose.Schema({
   image: {
     type: String,
   },
+  slug: {
+    type: String,
+  },
+
+  friends: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      default: [],
+    },
+  ],
   // friends: [
   //   {
   //     user: {

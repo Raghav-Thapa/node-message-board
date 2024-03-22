@@ -4,13 +4,23 @@ const MessageSchema = new mongoose.Schema(
   {
     content: {
       type: String,
-      required: true,
+      required: [true, "You can't send an empty message."],
     },
-    sender: {
+    senderId: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,
     },
+    receiverId: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    // sender: {
+    //   type: mongoose.Types.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -18,10 +28,10 @@ const MessageSchema = new mongoose.Schema(
     imgUrl: {
       type: String,
     },
-    chat: {
-      type: mongoose.Types.ObjectId,
-      ref: "Chat",
-    },
+    // chat: {
+    //   type: mongoose.Types.ObjectId,
+    //   ref: "Chat",
+    // },
   },
   {
     timestamps: true,

@@ -72,6 +72,19 @@ class UserService {
       throw { status: 500, msg: "Querry execution fialed." };
     }
   };
+
+  getUserByFilter = async (filter) => {
+    try {
+      let userDetail = await UserModel.find(filter);
+
+      // let userDetail = await this._db.collection("users").findOne({
+      //     _id: new ObjectId(id)
+      // })
+      return userDetail;
+    } catch (err) {
+      throw err;
+    }
+  };
 }
 
 const userServ = new UserService();
