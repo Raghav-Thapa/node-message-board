@@ -10,7 +10,24 @@ const HomePage = () => {
   const [userInfo, setUserInfo] = useState(null);
   let [userList, setUserList] = useState();
   let [loading, setLoading] = useState(true);
+  let [loadingMsg, setLoadingMsg] = useState(true);
   const navigate = useNavigate();
+  const [latestMessage, setLatestMessage] = useState({});
+
+  useEffect(() => {
+    console.log("Setting latestMessage in local storage");
+    const latestMessageString = localStorage.getItem("latestMessage");
+    const latestMessage = latestMessageString
+      ? JSON.parse(latestMessageString)
+      : {};
+    setLatestMessage(latestMessage);
+  }, []);
+
+  useEffect(() => {
+    console.log("Getting latestMessage from local storage");
+    const latestMessageString = JSON.stringify(latestMessage);
+    localStorage.setItem("latestMessage", latestMessageString);
+  }, [latestMessage]);
 
   useEffect(() => {
     const userInfoString = localStorage.getItem("user");
@@ -52,10 +69,14 @@ const HomePage = () => {
   const selectUser = async (user) => {
     console.log("Selecting user", user);
     setSelectedUser(user);
+    setLoadingMsg(true);
+    console.log("loadingMsg set to true");
     try {
       console.log("Fetching chat history");
       const response = await Auth.msgSvc.getMessages(user._id);
       console.log("Chat history fetched", response);
+      setLoadingMsg(false);
+      console.log("loadingMsg set to false");
       if (response.messages) {
         setChatHistory(response.messages);
       } else {
@@ -88,8 +109,19 @@ const HomePage = () => {
         ...chatHistory,
         { content: message, senderId: userInfo.id },
       ]);
+      setLatestMessage((latestMessages) => {
+        const newLatestMessages = {
+          ...latestMessages,
+          [selectedUser._id]: message,
+        };
+        localStorage.setItem(
+          "latestMessage",
+          JSON.stringify(newLatestMessages)
+        );
+        return newLatestMessages;
+      });
       setMessageInput("");
-       socketRef.current.emit("chat message", message);
+      socketRef.current.emit("chat message", message);
     } catch (error) {
       console.error("Error sending message", error);
     }
@@ -119,19 +151,19 @@ const HomePage = () => {
         <div className=" bg-black w-28 h-screen">
           <div>
             <div className="mt-8 text-center cursor-pointer  ">
-              <i className="fa-brands fa-connectdevelop text-slate-300 text-4xl  "></i>
+              <i className="fa-brands fa-connectdevelop text-slate-300 text-4xl hover:text-slate-400  "></i>
             </div>
             <div className="mt-40 flex flex-col justify-around ">
               <div className="mt-7 text-center cursor-pointer ">
-                <i className="fa-solid fa-message text-slate-300 text-xl"></i>
+                <i className="fa-solid fa-message text-slate-300 text-xl hover:text-slate-400"></i>
               </div>
               <div className="mt-7 text-center cursor-pointer  ">
-                <i className="fa-solid fa-user text-slate-300 text-xl"></i>
+                <i className="fa-solid fa-user text-slate-300 text-xl hover:text-slate-400"></i>
               </div>
               <div className="mt-7 text-center cursor-pointer ">
                 <i
                   onClick={Logout}
-                  className="fa-solid fa-right-from-bracket  text-slate-300 text-xl"
+                  className="fa-solid fa-right-from-bracket  text-slate-300 text-xl hover:text-slate-400"
                 ></i>
               </div>
             </div>
@@ -140,32 +172,18 @@ const HomePage = () => {
         <div className=" bg-gray-200 w-4/12 mt-1 mb-1 rounded-s-2xl border-r-2 border-gray-300">
           <div className="flex items-center justify-center mt-5 w-full">
             <div className="relative w-10/12">
-              {/* <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-6  text-gray-400"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg> */}
               <div className="text-3xl font-sans font-medium">Inbox</div>
               <hr className="border-black mt-4" />
               <div className=" font-thin text-sm pt-3">RECENT COVERSATIONS</div>
-              {/* <input
-                className="h-9 w-full rounded-lg ps-12 bg-indigo-200 text-black"
-                type="text"
-                placeholder="Search"
-              /> */}
             </div>
           </div>
           <div className=" overflow-scroll h-4/5 overflow-x-hidden">
             <ul>
+              {loading && (
+                <div className="text-center mt-32">
+                  <i class="fa-solid fa-spinner fa-spin-pulse text-6xl"></i>
+                </div>
+              )}
               {userList &&
                 userInfo &&
                 userList
@@ -190,10 +208,10 @@ const HomePage = () => {
                           />
                         </div>
                         <div className="mt-7 font-sans font-semibold ms-3">
-                          <div className="text-lg">{user.name}</div>
+                          <div className="text-lg capitalize ">{user.name}</div>
                           <div className="text-sm font-thin">
-                            {/* replace with the actual property for the latest message */}
-                            latest message sent by user
+                            {/* replace with the actual property for the latest message */}{" "}
+                            {latestMessage[user._id] || "No new messages yet"}
                           </div>
                         </div>
                       </div>
@@ -236,6 +254,11 @@ const HomePage = () => {
               </div>
             </div>
             <div className="h-4/5 overflow-scroll overflow-x-hidden  relative mb-2">
+              {loadingMsg && (
+                <div className="text-center mt-48">
+                  <i class="fa-solid fa-spinner fa-spin-pulse text-6xl"></i>
+                </div>
+              )}
               {chatHistory.map((message, index) => {
                 const isSender = message.senderId === userInfo.id;
                 const userImage = isSender
