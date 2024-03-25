@@ -1,8 +1,9 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import userImage from "../assets/captain.jpg";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Auth } from "../services/";
+import io from "socket.io-client";
 
 const HomePage = () => {
   // let userInfo = JSON.parse(localStorage.getItem("user"));
@@ -88,10 +89,29 @@ const HomePage = () => {
         { content: message, senderId: userInfo.id },
       ]);
       setMessageInput("");
+       socketRef.current.emit("chat message", message);
     } catch (error) {
       console.error("Error sending message", error);
     }
   };
+  const messagesEnd = useRef(null);
+
+  useEffect(() => {
+    messagesEnd.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatHistory]);
+
+  const socketRef = useRef();
+  useEffect(() => {
+    socketRef.current = io.connect("http://localhost:3000");
+
+    socketRef.current.on("chat message", (message) => {
+      setChatHistory((chatHistory) => [...chatHistory, message]);
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, []);
 
   return (
     <>
@@ -209,7 +229,10 @@ const HomePage = () => {
                 </h1>
               </div>
               <div className="text-right w-4/5 p-3  ">
-                <i className="fa-solid fa-xmark text-end text-2xl "></i>{" "}
+                <i
+                  onClick={() => setSelectedUser(null)}
+                  className="fa-solid fa-xmark text-end text-2xl cursor-pointer "
+                ></i>{" "}
               </div>
             </div>
             <div className="h-4/5 overflow-scroll overflow-x-hidden  relative mb-2">
@@ -272,44 +295,12 @@ const HomePage = () => {
                           </div>
                         </>
                       )}
-                      {/* <div>
-                        <img
-                          src={
-                            import.meta.env.VITE_IMAGE_URL +
-                            "/user/" +
-                            userImage
-                          }
-                          alt="pic"
-                          width={50}
-                          className="w-10 h-10 rounded-lg"
-                        />
-                      </div>
-                      <div>
-                        <h1 className="mb-6">{message.content}</h1>
-                      </div> */}
                     </div>
                   </div>
                 );
               })}
+              <div ref={messagesEnd} />
             </div>
-            {/* <div className="h-4/5 overflow-scroll overflow-x-hidden  relative mb-2">
-            Messages
-            <br />
-            dwadawdawdw
-            <div>
-              <h1 className="mb-6">Hello</h1>
-            </div>
-            <div>
-              <h1 className="mb-6">Hello</h1>
-            </div>
-            <div>
-              <h1 className="mb-6">Hello</h1>
-            </div>
-            <div>
-              <h1 className="mb-6">Hello</h1>
-            </div>
-          </div> */}
-
             <div className="">
               <input
                 className="h-9 w-11/12 ps-7 bg-slate-300 text-black"
@@ -320,14 +311,12 @@ const HomePage = () => {
                 onKeyDown={(event) => {
                   if (event.key === "Enter") {
                     sendMessage(event.target.value);
-                    // setMessageInput("");
                   }
                 }}
               />
               <button
                 onClick={() => {
                   sendMessage(messageInput);
-                  // setMessageInput("");
                 }}
               >
                 <i className="fa-solid fa-paper-plane ms-2 text-2xl"></i>
@@ -337,7 +326,6 @@ const HomePage = () => {
         ) : (
           <div className=" bg-gray-200 w-full mt-1 mb-1 me-2 rounded-e-2xl">
             <div>
-              {" "}
               <i className="fa-regular fa-comments text-gray-700 text-9xl text-center w-full mt-40  "></i>
             </div>
             <div>

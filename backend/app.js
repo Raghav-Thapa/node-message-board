@@ -1,15 +1,11 @@
 const express = require("express");
 const app = express();
 const router = require("./src/routes/index");
-const session = require("express-session");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const multer = require("multer");
 const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
+const { Server } = require("socket.io");
 
 const PORT = process.env.PORT || 3000;
 app.use(cors());
@@ -34,7 +30,6 @@ db.once("open", function () {
   console.log("DB connection established");
 });
 
-
 app.use((error, req, res, next) => {
   let status = error && error.status ? error.status : 500;
   let msg = error && error.msg ? error.msg : "internal server error";
@@ -48,7 +43,23 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log("Server is running");
 });
 
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  socket.on("chat message", (msg) => {
+    console.log("message: " + msg);
+
+    // broadcast the message to all other clients
+    io.emit("chat message", msg);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
