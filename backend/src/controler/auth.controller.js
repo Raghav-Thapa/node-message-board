@@ -11,8 +11,6 @@ class AuthController {
       if (req.file) {
         registerData.image = req.file.filename;
       }
-
-      //   console.log(registerData)
       userServ.validatedata(registerData);
       registerData.password = bcrypt.hashSync(registerData.password, 10);
       let registerResponse = await userServ.registerUser(registerData);
@@ -125,7 +123,6 @@ class AuthController {
     }
   };
 
-
   getUserBySlug = async (req, res, next) => {
     try {
       let user = await userServ.getUserByFilter(
@@ -146,6 +143,43 @@ class AuthController {
       });
     } catch (except) {
       next(except);
+    }
+  };
+
+  handleUserUpdate = async (req, res, next) => {
+    const userId = req.params.id;
+    try {
+      if (req.method === "GET") {
+        const user = await userServ.getUserById(userId);
+        if (user) {
+          res.json({
+            result: user,
+            msg: "User fetched successfully for editing",
+            status: true,
+          });
+        } else {
+          next({ status: 400, msg: "User not found" });
+        }
+      } else if (req.method === "PUT") {
+        const updateData = req.body;
+        if (req.file) {
+          updateData.image = req.file.filename;
+        }
+          updateData.password = bcrypt.hashSync(updateData.password, 10);
+        const updatedUser = await userServ.updateUser(userId, updateData);
+        if (updatedUser) {
+          res.json({
+            result: updatedUser,
+            msg: "User updated successfully",
+            status: true,
+          });
+        } else {
+          next({ status: 400, msg: "User cannot be updated at this moment" });
+        }
+      }
+    } catch (exception) {
+      console.log(exception);
+      next(exception);
     }
   };
 }

@@ -85,6 +85,17 @@ class UserService {
       throw err;
     }
   };
+  
+  updateUser = async (id, updateData) => {
+    try {
+      let updatedUser = await UserModel.findByIdAndUpdate(id, updateData, {
+        new: true,
+      });
+      return updatedUser;
+    } catch (exception) {
+      throw exception;
+    }
+  };
 }
 
 const userServ = new UserService();

@@ -57,6 +57,18 @@ class AuthService extends HttpService {
       throw exception;
     }
   };
+
+  updateUser = async (data, id) => {
+    try {
+      let response = await this.putRequest("/auth/" + id, data, {
+        auth: true,
+        file: true,
+      });
+      return response;
+    } catch (exception) {
+      throw exception;
+    }
+  };
 }
 
 export default AuthService;
