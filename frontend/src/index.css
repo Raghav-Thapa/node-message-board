@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Molle&display=swap');
 
 ::-webkit-scrollbar {
     width: 1px;
@@ -13,4 +14,4 @@
     color: rgb(86, 84, 84);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Molle&display=swap')
+

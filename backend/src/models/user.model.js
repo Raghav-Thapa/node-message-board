@@ -29,20 +29,6 @@ const UserSchema = new mongoose.Schema({
       default: [],
     },
   ],
-  // friends: [
-  //   {
-  //     user: {
-  //       type: mongoose.Types.ObjectId,
-  //       // required: true,
-  //       ref: "User",
-  //     },
-  //     chat: {
-  //       type: mongoose.Types.ObjectId,
-  //       // required: true,
-  //       ref: "Chat",
-  //     },
-  //   },
-  // ],
 });
 
 const UserModel = mongoose.model("User", UserSchema)

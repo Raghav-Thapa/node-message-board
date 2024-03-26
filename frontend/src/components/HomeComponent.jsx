@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink} from "react-router-dom";
 
 export const SideBar = ({ Logout, userId }) => {
   return (
@@ -84,7 +84,6 @@ export const UserLists = ({
                       <div className="mt-7 font-sans font-semibold ms-3">
                         <div className="text-lg capitalize ">{user.name}</div>
                         <div className="text-sm font-thin">
-                          {/* replace with the actual property for the latest message */}{" "}
                           {latestMessage[user._id] || "No new messages yet"}
                         </div>
                       </div>

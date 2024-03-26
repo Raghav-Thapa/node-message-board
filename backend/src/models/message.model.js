@@ -16,11 +16,6 @@ const MessageSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    // sender: {
-    //   type: mongoose.Types.ObjectId,
-    //   ref: "User",
-    //   required: true,
-    // },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -28,10 +23,6 @@ const MessageSchema = new mongoose.Schema(
     imgUrl: {
       type: String,
     },
-    // chat: {
-    //   type: mongoose.Types.ObjectId,
-    //   ref: "Chat",
-    // },
   },
   {
     timestamps: true,

@@ -2,7 +2,6 @@ const express = require("express");
 const app = express.Router();
 const authCtrl = require("../controler/auth.controller");
 const authCheck = require("../middleware/auth.middleware");
-const multer = require("multer");
 const uploader = require("../middleware/uploader.middleware");
 
 const uploadPath = (req, res, next) => {

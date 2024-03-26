@@ -5,19 +5,19 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 class ChatController {
+  getUserConversations = async (req, res) => {
+    const userId = req.user?.userId;
 
-  getUserConversations = async(req, res) => {
-  const userId = req.user?.userId;
+    try {
+      const conversations = await chatServ.getUserConversations(userId);
+      res.status(200).json({
+        conversations: conversations,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.toString() });
+    }
+  };
 
-  try {
-    const conversations = await chatServ.getUserConversations(userId);
-    res.status(200).json({
-      conversations: conversations,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.toString() });
-  }
-}
   accessChat = async (req, res) => {
     const friendId = req.body.friendId;
 
@@ -32,7 +32,6 @@ class ChatController {
       return res.json(error);
     }
   };
-  
 
   fetchChats = async (req, res) => {
     try {
@@ -70,7 +69,6 @@ class ChatController {
       return res.status(500).json({ msg: "Internal server error" });
     }
   };
-
 }
 
 const chatCtrl = new ChatController();

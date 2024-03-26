@@ -7,7 +7,6 @@ import io from "socket.io-client";
 import { ChatContent, SideBar, UserLists } from "../components/HomeComponent";
 
 const HomePage = () => {
-  // let userInfo = JSON.parse(localStorage.getItem("user"));
   const [userInfo, setUserInfo] = useState(null);
   let [userList, setUserList] = useState();
   let [loading, setLoading] = useState(true);
@@ -120,7 +119,6 @@ const HomePage = () => {
         return newLatestMessages;
       });
       setMessageInput("");
-      socketRef.current.emit("chat message", message);
     } catch (error) {
       console.error("Error sending message", error);
     }
@@ -131,18 +129,20 @@ const HomePage = () => {
     messagesEnd.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory]);
 
-  // const socketRef = useRef();
-  // useEffect(() => {
-  //   socketRef.current = io.connect("http://localhost:3000");
+  const socketRef = useRef();
 
-  //   socketRef.current.on("chat message", (message) => {
-  //     setChatHistory((chatHistory) => [...chatHistory, message]);
-  //   });
+  useEffect(() => {
+    socketRef.current = io.connect("http://localhost:3000");
 
-  //   return () => {
-  //     socketRef.current.disconnect();
-  //   };
-  // }, []);
+    socketRef.current.on("chat message", (message) => {
+      setChatHistory((chatHistory) => [...chatHistory, message]);
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, []);
+
   let userD = JSON.parse(localStorage.getItem("user"));
   return (
     <>

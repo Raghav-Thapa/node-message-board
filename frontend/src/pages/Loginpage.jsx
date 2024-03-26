@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import loginImage from "../assets/loginimg.jpg";
 import { useState } from "react";
 import RegisterPage from "./Registerpage";
@@ -15,7 +14,6 @@ const LoginPage = () => {
   const handleSignUp = () => {
     setSignup(true);
     setLogin(false);
-    // toast.success("Please register to continue");
   };
 
   const handleLogin = () => {
@@ -67,16 +65,6 @@ const LoginPage = () => {
       }
     },
   });
-
-  const isLoggedIn = () => {
-    return localStorage.getItem("user") !== null;
-  };
-
-  const Logout = () => {
-    localStorage.clear();
-    navigate("/");
-    toast.success("Logged Out Successfully");
-  };
 
   return (
     <>

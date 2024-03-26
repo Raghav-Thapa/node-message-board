@@ -5,10 +5,17 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
-// const { Server } = require("socket.io");
+const { Server } = require("socket.io");
+const msgServ = require("./src/service/message.service");
 
 const PORT = process.env.PORT || 3000;
 app.use(cors());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -47,19 +54,25 @@ const server = app.listen(PORT, () => {
   console.log("Server is running");
 });
 
-// const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+  },
+});
 
-// io.on("connection", (socket) => {
-//   console.log("a user connected");
+io.on("connection", (socket) => {
+  console.log("a user connected");
 
-//   socket.on("chat message", (msg) => {
-//     console.log("message: " + msg);
+  socket.on("chat message", (msg) => {
+    console.log("message: " + msg);
 
-//     // broadcast the message to all other clients
-//     io.emit("chat message", msg);
-//   });
+    io.emit("chat message", msg);
+  });
 
-//   socket.on("disconnect", () => {
-//     console.log("user disconnected");
-//   });
-// });
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
+
+msgServ.setIo(io);

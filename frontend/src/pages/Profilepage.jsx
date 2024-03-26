@@ -49,7 +49,7 @@ const ProfilePage = () => {
     navigate("/");
     toast.success("Logged Out Successfully");
   };
-
+  
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -112,7 +112,11 @@ const ProfilePage = () => {
         </div>
 
         {editProfile && (
-          <div className="bg-gray-300 absolute ms-96 mt-28 w-3/5 h-3/4 rounded-xl ">
+          <div
+            className={`bg-gray-300 absolute ms-96 mt-28 w-3/5 h-3/4 rounded-xl ani fade ${
+              editProfile ? "show" : ""
+            }`}
+          >
             <div className="float-end me-5 mt-3">
               <i
                 onClick={() => setEditProfile(false)}
