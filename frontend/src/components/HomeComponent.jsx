@@ -6,15 +6,18 @@ export const SideBar = ({ Logout, userId }) => {
       <div className=" bg-black w-28 h-screen">
         <div>
           <div className="mt-8 text-center cursor-pointer  ">
-            <i className="fa-brands fa-connectdevelop text-slate-300 text-4xl hover:text-slate-400  "></i>
+            <NavLink to="/go">
+              <i className="fa-brands fa-connectdevelop text-slate-300 text-4xl hover:text-slate-400  "></i>
+            </NavLink>
           </div>
           <div className="mt-40 flex flex-col justify-around ">
             <div className="mt-7 text-center cursor-pointer ">
-              <i className="fa-solid fa-message text-slate-300 text-xl hover:text-slate-400"></i>
+              <NavLink to="/go">
+                <i className="fa-solid fa-message text-slate-300 text-xl hover:text-slate-400"></i>
+              </NavLink>
             </div>
             <div className="mt-7 text-center cursor-pointer  ">
               <NavLink to={"/profile/" + userId}>
-                {" "}
                 <i className="fa-solid fa-user text-slate-300 text-xl hover:text-slate-400"></i>
               </NavLink>
             </div>

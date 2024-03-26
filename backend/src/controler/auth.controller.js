@@ -165,7 +165,11 @@ class AuthController {
         if (req.file) {
           updateData.image = req.file.filename;
         }
+
+        if (req.body.password) {
           updateData.password = bcrypt.hashSync(updateData.password, 10);
+        }
+
         const updatedUser = await userServ.updateUser(userId, updateData);
         if (updatedUser) {
           res.json({
