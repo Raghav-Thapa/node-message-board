@@ -1,5 +1,4 @@
 import HttpService from "./http.service";
-import axiosInstance from "../config/axios.config";
 
 class ChatService extends HttpService {
   getUserConversations = async () => {
