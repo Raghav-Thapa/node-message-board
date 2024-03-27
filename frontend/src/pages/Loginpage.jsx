@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import AuthService from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
+import { FormField } from "../components/FormComponent";
 
 const LoginPage = () => {
   const [signUp, setSignup] = useState(false);
@@ -15,7 +16,6 @@ const LoginPage = () => {
     setSignup(true);
     setLogin(false);
   };
-
   const handleLogin = () => {
     setSignup(false);
     setLogin(true);
@@ -76,20 +76,24 @@ const LoginPage = () => {
                 <h1 className="text-center text-3xl font-serif mt-6">Login</h1>
                 <hr className="mt-2 border-black" />
                 <div className="flex flex-col justify-center items-center mt-5">
-                  <input
-                    className="h-9 w-2/3 ps-5 mt-7 bg-white border rounded-xl text-black"
-                    type="text"
-                    placeholder="Enter your email"
-                    name="email"
+                  <FormField
+                    type={"text"}
+                    name={"email"}
+                    placeholder={"Enter your email"}
+                    classname={
+                      "h-9 w-2/3 ps-5 mt-7 bg-white border rounded-xl text-black"
+                    }
                     onChange={formik.handleChange}
                   />
                   <span className="text-red-800">{formik.errors?.email}</span>
-                  <input
-                    className="h-9 w-2/3 ps-5 mt-7 bg-white border rounded-xl text-black"
-                    type="text"
-                    placeholder="Enter your password"
-                    name="password"
+                  <FormField
+                    name={"password"}
+                    type={"password"}
+                    placeholder={"Enter your password"}
                     onChange={formik.handleChange}
+                    classname={
+                      "h-9 w-2/3 ps-5 mt-7 bg-white border rounded-xl text-black"
+                    }
                   />
                   <span className="text-red-800">
                     {formik.errors?.password}

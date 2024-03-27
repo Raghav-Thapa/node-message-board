@@ -1,6 +1,5 @@
 import { useCallback, useState, useEffect, useRef } from "react";
-import userImage from "../assets/captain.jpg";
-import { NavLink, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Auth } from "../services/";
 import io from "socket.io-client";

@@ -2,9 +2,10 @@ import userImg from "../assets/user.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import AuthService from "../services/auth.service";
-import { useNavigate } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { FormField } from "../components/FormComponent";
 
 const RegisterPage = ({ submitRegister }) => {
   const navigate = useNavigate();
@@ -76,47 +77,51 @@ const RegisterPage = ({ submitRegister }) => {
             />
           </div>
           <label>Enter your name</label>
-          <input
-            className="h-9 mt-1 mb-3 w-2/3 ps-5 bg-white border rounded-md text-black"
-            type="text"
-            name="name"
-            required
+          <FormField
+            type={"text"}
+            name={"name"}
             onChange={formik.handleChange}
-            placeholder="Enter your full name"
-          />{" "}
+            placeholder={"Enter your full name"}
+            classname={
+              "h-9 mt-1 mb-3 w-2/3 ps-5 bg-white border rounded-md text-black"
+            }
+          />
           {/* <span className="text-red-800">{formik.errors?.name}</span> */}
           <label>Enter your email</label>
-          <input
-            className="h-9 mt-1 mb-3 w-2/3 ps-5 bg-white border rounded-md text-black"
-            type="text"
-            placeholder="Enter your email"
-            name="email"
-            required
+          <FormField
+            type={"text"}
+            placeholder={"Enter your email"}
+            name={"email"}
             onChange={formik.handleChange}
-          />{" "}
+            classname={
+              "h-9 mt-1 mb-3 w-2/3 ps-5 bg-white border rounded-md text-black"
+            }
+          />
           {/* <span className="text-red-800">{formik.errors?.email}</span> */}
           <div className="w-full flex">
             <div className="flex flex-col w-1/2">
               <label>Enter your password</label>
-              <input
-                className="h-9 mt-1 mb-3 w-3/4 ps-5  bg-white border rounded-md text-black"
-                type="text"
-                placeholder="Enter your password"
-                name="password"
-                required
+              <FormField
+                type={"password"}
+                placeholder={"Enter your password"}
+                name={"password"}
                 onChange={formik.handleChange}
-              />{" "}
+                classname={
+                  "h-9 mt-1 mb-3 w-3/4 ps-5  bg-white border rounded-md text-black"
+                }
+              />
               <span className="text-red-800 ">{formik.errors?.password}</span>
             </div>
             <div className="flex flex-col w-1/2">
               <label>Confirm your password</label>
-              <input
-                className="h-9 mt-1 mb-3 w-3/4 ps-5  bg-white border rounded-md text-black"
-                type="text"
-                placeholder="Repeat your password"
-                name="confirmPassword"
-                required
+              <FormField
+                type={"password"}
+                name={"confirmPassword"}
+                placeholder={"Repeat your password"}
                 onChange={formik.handleChange}
+                classname={
+                  "h-9 mt-1 mb-3 w-3/4 ps-5  bg-white border rounded-md text-black"
+                }
               />
               <span className=" text-red-800 ">
                 {formik.errors?.confirmPassword}
@@ -164,6 +169,16 @@ const RegisterPage = ({ submitRegister }) => {
           >
             Sign Up
           </button>
+        </div>
+        <div className="mt-16">
+          <span
+            className="cursor-pointer text-blue-900 font-serif"
+            onClick={submitRegister}
+          >
+            {" "}
+            <i className="fa-solid fa-arrow-left me-2 cursor-pointer "></i> Back
+            to Login
+          </span>
         </div>
       </div>
     </>
