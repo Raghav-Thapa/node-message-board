@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { SideBar } from "../components/HomeComponent";
 import { ProfileInfo } from "../components/ProfileComponent";
+import { FormField } from "../components/FormComponent";
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [detail, setDetail] = useState(null);
@@ -93,40 +94,48 @@ const ProfilePage = () => {
               <div>
                 <div className="ps-20 pt-16 font-serif">
                   <label className="me-2">Enter your name:</label>
-                  <input
-                    className="h-9 mt-1 mb-8 w-2/5 ps-5 bg-white border rounded-md text-black"
-                    type="text"
-                    name="name"
+                  <FormField
+                    classname={
+                      "h-9 mt-1 mb-8 w-2/5 ps-5 bg-white border rounded-md text-black"
+                    }
+                    type={"text"}
+                    name={"name"}
                     onChange={formik.handleChange}
                     value={formik.values.name}
-                  />{" "}
+                  />
                   <br />
                   {/* <span className="text-red-800">{formik.errors?.name}</span> */}
                   <label className="me-2">Enter your email:</label>
-                  <input
-                    className="h-9 mt-1 mb-8 w-2/5 ps-5 bg-white border rounded-md text-black"
-                    type="text"
-                    name="email"
+                  <FormField
+                    classname={
+                      "h-9 mt-1 mb-8 w-2/5 ps-5 bg-white border rounded-md text-black"
+                    }
+                    type={"text"}
+                    name={"email"}
                     onChange={formik.handleChange}
                     value={formik.values.email}
-                  />{" "}
+                  />
                   {/* <span className="text-red-800">{formik.errors?.email}</span> */}
                   <div className="w-full flex">
                     <div className="flex flex-col w-1/2">
                       <label>Enter new password:</label>
-                      <input
-                        className="h-9 mt-1 mb-8 w-3/4 ps-5  bg-white border rounded-md text-black"
-                        type="password"
-                        name="password"
+                      <FormField
+                        classname={
+                          "h-9 mt-1 mb-8 w-3/4 ps-5  bg-white border rounded-md text-black"
+                        }
+                        type={"password"}
+                        name={"password"}
                         onChange={formik.handleChange}
-                      />{" "}
+                      />
                     </div>
                     <div className="flex flex-col w-1/2">
                       <label>Confirm your password:</label>
-                      <input
-                        className="h-9 mt-1 mb-8 w-3/4 ps-5  bg-white border rounded-md text-black"
-                        type="password"
-                        name="confirmPassword"
+                      <FormField
+                        classname={
+                          "h-9 mt-1 mb-8 w-3/4 ps-5  bg-white border rounded-md text-black"
+                        }
+                        type={"password"}
+                        name={"confirmPassword"}
                         onChange={formik.handleChange}
                       />
                     </div>

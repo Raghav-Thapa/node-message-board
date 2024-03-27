@@ -1,4 +1,11 @@
-export const FormField = ({ onChange, name, placeholder, type, classname }) => {
+export const FormField = ({
+  onChange,
+  name,
+  placeholder,
+  type,
+  classname,
+  value,
+}) => {
   return (
     <>
       <input
@@ -7,6 +14,7 @@ export const FormField = ({ onChange, name, placeholder, type, classname }) => {
         placeholder={placeholder}
         name={name}
         onChange={onChange}
+        value={value}
       />
     </>
   );
