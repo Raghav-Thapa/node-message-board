@@ -2,7 +2,7 @@ import userImg from "../assets/user.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import AuthService from "../services/auth.service";
-import { Form, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { FormField } from "../components/FormComponent";
@@ -86,7 +86,7 @@ const RegisterPage = ({ submitRegister }) => {
               "h-9 mt-1 mb-3 w-2/3 ps-5 bg-white border rounded-md text-black"
             }
           />
-          {/* <span className="text-red-800">{formik.errors?.name}</span> */}
+          {/* <span className="text-red-800">{formik.errors?.name}</span  > */}
           <label>Enter your email</label>
           <FormField
             type={"text"}

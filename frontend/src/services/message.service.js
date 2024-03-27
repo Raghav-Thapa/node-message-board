@@ -18,7 +18,7 @@ class MessageService extends HttpService {
           (participant) => typeof participant === "string"
         )
       ) {
-        console.error("Invalid participants: expected an array of strings");
+        console.error("Invalid ");
         return;
       }
       const receiverId = requestBody.participants[1];

@@ -80,6 +80,7 @@ const ProfilePage = () => {
     <>
       <div className=" w-full flex bg-black max-h-screen ">
         <SideBar Logout={Logout} />
+
         <ProfileInfo detail={detail} handleEditProfile={handleEditProfile} />
 
         {editProfile && (

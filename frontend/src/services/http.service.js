@@ -63,38 +63,6 @@ class HttpService {
       throw exception;
     }
   };
-  patchRequest = async (
-    url,
-    data = {},
-    config = { auth: false, file: false }
-  ) => {
-    try {
-      this.getHeader(config);
-      console.log("Header: ", this.headers);
-      let response = await axiosInstance.patch(url, data, {
-        headers: {
-          ...this.headers,
-        },
-      });
-      return response;
-    } catch (exception) {
-      throw exception;
-    }
-  };
-  deleteRequest = async (url, config = {}) => {
-    try {
-      this.getHeader(config);
-
-      let response = await axiosInstance.delete(url, {
-        headers: {
-          ...this.headers,
-        },
-      });
-      return response;
-    } catch (exception) {
-      throw exception;
-    }
-  };
 }
 
 export default HttpService;
