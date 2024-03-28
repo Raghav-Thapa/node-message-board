@@ -18,7 +18,6 @@ class MessageService {
     let conversation = await ChatModel.findOne({
       participants: { $all: participants },
     });
-
     if (!conversation) {
       try {
         conversation = await ChatModel.create({

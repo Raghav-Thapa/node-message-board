@@ -21,9 +21,16 @@ class MessageController {
     const senderId = req.user?._id;
     const receiverId = req.params.id;
     try {
+      let data = req.body;
+      if (req.files) {
+        data.images = req.files.map((item) => {
+          return item.filename;
+        });
+      }
       const message = await msgServ.sendMessage(senderId, receiverId, {
         content,
         participants,
+        images: data.images,
       });
       res.status(201).json({
         message,

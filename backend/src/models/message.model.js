@@ -20,8 +20,8 @@ const MessageSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    imgUrl: {
-      type: String,
+    images: {
+      type: Array,
     },
   },
   {

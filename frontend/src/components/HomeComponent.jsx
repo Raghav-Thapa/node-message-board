@@ -41,6 +41,7 @@ export const UserLists = ({
   selectUser,
   latestMessage,
 }) => {
+  
   return (
     <>
       <div className=" bg-gray-200 w-4/12 mt-1 mb-1 rounded-s-2xl border-r-2 border-gray-300">
@@ -127,6 +128,7 @@ export const ChatContent = ({
                   className="w-16 h-16 rounded-full"
                 />
               )}
+
             </div>
             <div>
               <h1 className="font-sans font-semibold text-2xl mt-2 ms-4 w-full ">
