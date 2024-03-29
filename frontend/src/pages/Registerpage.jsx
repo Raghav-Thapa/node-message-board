@@ -19,7 +19,7 @@ const RegisterPage = ({ submitRegister }) => {
       [Yup.ref("password"), null],
       "Password does not match"
     ),
-    image: Yup.string(),
+    image: Yup.string().required(),
   });
 
   const formik = useFormik({
@@ -154,7 +154,8 @@ const RegisterPage = ({ submitRegister }) => {
               }
             }}
           />
-        </div>
+        <span className="text-red-800">{formik.errors?.image}</span>
+        </div>{" "}
         <div className="flex justify-center mt-4">
           <button
             disabled={loading}

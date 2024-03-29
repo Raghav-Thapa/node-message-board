@@ -78,35 +78,15 @@ const UseChatHooks = () => {
         ...chatHistory,
         { content: message, senderId: userInfo.id },
       ]);
-      setLatestMessage((latestMessages) => {
-        const newLatestMessages = {
-          ...latestMessages,
-          [selectedUser._id]: message,
-        };
-        localStorage.setItem(
-          "latestMessage",
-          JSON.stringify(newLatestMessages)
-        );
-        return newLatestMessages;
-      });
+      setLatestMessage((prevLatestMessage) => ({
+        ...prevLatestMessage,
+        [selectedUser._id]: message,
+      }));
       setMessageInput("");
     } catch (error) {
       console.error("Error sending message", error);
     }
   };
-
-  useEffect(() => {
-    const latestMessageString = localStorage.getItem("latestMessage");
-    const latestMessage = latestMessageString
-      ? JSON.parse(latestMessageString)
-      : {};
-    setLatestMessage(latestMessage);
-  }, []);
-
-  useEffect(() => {
-    const latestMessageString = JSON.stringify(latestMessage);
-    localStorage.setItem("latestMessage", latestMessageString);
-  }, [latestMessage]);
 
   useEffect(() => {
     const userInfoString = localStorage.getItem("user");
@@ -129,14 +109,20 @@ const UseChatHooks = () => {
   useEffect(() => {
     socketRef.current = io.connect("http://localhost:3000");
 
-    socketRef.current.on("chat message", (message) => {
-      setChatHistory((chatHistory) => [...chatHistory, message]);
-    });
+     socketRef.current.on("chat message", (message) => {
+       setChatHistory((chatHistory) => [...chatHistory, message]);
+       setLatestMessage((prevLatestMessage) => ({
+         ...prevLatestMessage,
+         [message.senderId]: message.content,
+       }));
+     });
 
     return () => {
       socketRef.current.disconnect();
     };
   }, []);
+
+
 
   return {
     userInfo,
