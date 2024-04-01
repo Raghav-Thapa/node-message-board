@@ -17,7 +17,6 @@ export const ProfileInfo = ({ detail, handleEditProfile }) => {
             )}
           </div>
           <div className="text-5xl font-semibold text-center mt-5">
-            {" "}
             {detail && detail.name}
           </div>
           <div className="text-center text-lg mt-2 ">

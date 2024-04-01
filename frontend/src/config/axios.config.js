@@ -21,7 +21,6 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
       toast.warning("Please login first");
-      // window.location.href = "/login"
     } else if (error.response.status === 403) {
       toast.warning("You do not have previlege to access this panel");
       window.location.href = "/";

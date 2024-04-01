@@ -122,8 +122,6 @@ const UseChatHooks = () => {
     };
   }, []);
 
-
-
   return {
     userInfo,
     userList,
