@@ -86,7 +86,7 @@ const RegisterPage = ({ submitRegister }) => {
               "h-9 mt-1 mb-3 w-2/3 ps-5 bg-white border rounded-md text-black"
             }
           />
-          {/* <span className="text-red-800">{formik.errors?.name}</span  > */}
+          <span className="text-red-800">{formik.errors?.name}</span  >
           <label>Enter your email</label>
           <FormField
             type={"text"}
@@ -97,7 +97,7 @@ const RegisterPage = ({ submitRegister }) => {
               "h-9 mt-1 mb-3 w-2/3 ps-5 bg-white border rounded-md text-black"
             }
           />
-          {/* <span className="text-red-800">{formik.errors?.email}</span> */}
+          <span className="text-red-800">{formik.errors?.email}</span>
           <div className="w-full flex">
             <div className="flex flex-col w-1/2">
               <label>Enter your password</label>

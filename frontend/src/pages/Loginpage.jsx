@@ -16,6 +16,7 @@ const LoginPage = () => {
     setSignup(true);
     setLogin(false);
   };
+  
   const handleLogin = () => {
     setSignup(false);
     setLogin(true);
@@ -27,6 +28,7 @@ const LoginPage = () => {
     email: Yup.string().email().required(),
     password: Yup.string().required(),
   });
+
   const formik = useFormik({
     initialValues: {
       email: null,
@@ -42,7 +44,6 @@ const LoginPage = () => {
             name: response.result.data.name,
             email: response.result.data.email,
           };
-
           localStorage.setItem(
             "accessToken",
             response.result.token.accessToken

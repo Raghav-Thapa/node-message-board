@@ -20,7 +20,6 @@ const HomePage = () => {
     Logout,
   } = UseChatHooks();
 
-
   return (
     <>
       <div className=" w-full flex bg-black max-h-screen ">
