@@ -9,7 +9,6 @@ class MessageService {
     const conversation = await ChatModel.findOne({
       participants: { $all: [senderId, receiverId] },
     }).populate("messages");
-    // console.log(conversation);
     return conversation?.messages || [];
   }
 
